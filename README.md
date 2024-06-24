@@ -1,3 +1,4 @@
 # iOS18 SwiftUI MeshGradient Editor
 
-![Uploading CleanShot 2024-06-25 at 02.20.24@2x.png…]()
+<img width="333" alt="image" src="https://github.com/muukii/swiftui-mesh-gradient-editor/assets/1888355/5176d809-f548-4612-960c-2383bcb4bc13">
+
