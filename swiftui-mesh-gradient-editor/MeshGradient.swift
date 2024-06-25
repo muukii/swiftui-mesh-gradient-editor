@@ -277,7 +277,7 @@ struct BookMeshGradient: View, PreviewProvider {
       Stepper(
         "H",
         onIncrement: {
-          
+                           
           // update position
           do {
             let coefficient = (1 - (1 / Float(height)))
