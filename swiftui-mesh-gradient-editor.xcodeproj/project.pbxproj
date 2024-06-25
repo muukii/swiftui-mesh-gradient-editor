@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4B7556472C29D5A500BAE143 /* MeshGradientEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76DD512C29B942000D9C9B /* MeshGradientEditor.swift */; };
+		4B7556472C29D5A500BAE143 /* BookMeshGradientBezierPoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76DD512C29B942000D9C9B /* BookMeshGradientBezierPoints.swift */; };
 		4B75564B2C29D62400BAE143 /* SwiftUISupport in Frameworks */ = {isa = PBXBuildFile; productRef = 4B75564A2C29D62400BAE143 /* SwiftUISupport */; };
 		4B76DD282C29B931000D9C9B /* swiftui_mesh_gradient_editorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76DD272C29B931000D9C9B /* swiftui_mesh_gradient_editorApp.swift */; };
 		4B76DD2A2C29B931000D9C9B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B76DD292C29B931000D9C9B /* ContentView.swift */; };
@@ -46,7 +46,7 @@
 		4B76DD3E2C29B933000D9C9B /* swiftui-mesh-gradient-editorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "swiftui-mesh-gradient-editorUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B76DD422C29B933000D9C9B /* swiftui_mesh_gradient_editorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftui_mesh_gradient_editorUITests.swift; sourceTree = "<group>"; };
 		4B76DD442C29B933000D9C9B /* swiftui_mesh_gradient_editorUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = swiftui_mesh_gradient_editorUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		4B76DD512C29B942000D9C9B /* MeshGradientEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshGradientEditor.swift; sourceTree = "<group>"; };
+		4B76DD512C29B942000D9C9B /* BookMeshGradientBezierPoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookMeshGradientBezierPoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +106,7 @@
 		4B76DD262C29B931000D9C9B /* swiftui-mesh-gradient-editor */ = {
 			isa = PBXGroup;
 			children = (
-				4B76DD512C29B942000D9C9B /* MeshGradientEditor.swift */,
+				4B76DD512C29B942000D9C9B /* BookMeshGradientBezierPoints.swift */,
 				4B76DD272C29B931000D9C9B /* swiftui_mesh_gradient_editorApp.swift */,
 				4B76DD292C29B931000D9C9B /* ContentView.swift */,
 				4B76DD2B2C29B933000D9C9B /* Assets.xcassets */,
@@ -276,7 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B7556472C29D5A500BAE143 /* MeshGradientEditor.swift in Sources */,
+				4B7556472C29D5A500BAE143 /* BookMeshGradientBezierPoints.swift in Sources */,
 				4B76DD2A2C29B931000D9C9B /* ContentView.swift in Sources */,
 				4B76DD282C29B931000D9C9B /* swiftui_mesh_gradient_editorApp.swift in Sources */,
 			);
