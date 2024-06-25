@@ -51,7 +51,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
             trailingControlPoint: .init(1, 0),
             bottomControlPoint: .init(1, 0)
           ),
-          color: .red
+          color: .pink
         ),
       ],
       [
@@ -63,7 +63,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
             trailingControlPoint: .init(0, 1),
             bottomControlPoint: .init(0, 1)
           ),
-          color: .red
+          color: .cyan
         ),
         .init(
           point: .init(
@@ -73,7 +73,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
             trailingControlPoint: .init(1, 1),
             bottomControlPoint: .init(1, 1)
           ),
-          color: .red
+          color: .purple
         ),
       ],
     ]
@@ -98,8 +98,8 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
             MeshGradient(
               width: width,
               height: height,
-              bezierPoints: flattenedPoints.map(\.point),
-              colors: flattenedPoints.map(\.color)
+              locations: .bezierPoints(flattenedPoints.map(\.point)),
+              colors: .colors(flattenedPoints.map(\.color))
             )
             .measureSize($gradientSize)
             .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -107,8 +107,8 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
               MeshGradient(
                 width: width,
                 height: height,
-                bezierPoints: flattenedPoints.map(\.point),
-                colors: flattenedPoints.map(\.color)
+                locations: .bezierPoints(flattenedPoints.map(\.point)),
+                colors: .colors(flattenedPoints.map(\.color))
               )
               .measureSize($gradientSize)
               .saturation(0.8)
@@ -226,25 +226,28 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
         )
 
         if isActive {
-          makeDraggalbe(
-            view: BezierHandle().tint(.blue),
-            binding: point.point.leadingControlPoint
-          )
-          
-          makeDraggalbe(
-            view: BezierHandle(),
-            binding: point.point.topControlPoint
-          )
-          
-          makeDraggalbe(
-            view: BezierHandle(),
-            binding: point.point.bottomControlPoint
-          )
-          
-          makeDraggalbe(
-            view: BezierHandle().tint(.blue),
-            binding: point.point.trailingControlPoint
-          )
+          Group {
+            makeDraggalbe(
+              view: BezierHandle().tint(.blue),
+              binding: point.point.leadingControlPoint
+            )
+            
+            makeDraggalbe(
+              view: BezierHandle(),
+              binding: point.point.topControlPoint
+            )
+            
+            makeDraggalbe(
+              view: BezierHandle(),
+              binding: point.point.bottomControlPoint
+            )
+            
+            makeDraggalbe(
+              view: BezierHandle().tint(.blue),
+              binding: point.point.trailingControlPoint
+            )
+          }
+          .transition(.scale.animation(.spring))
         }
         
       }
