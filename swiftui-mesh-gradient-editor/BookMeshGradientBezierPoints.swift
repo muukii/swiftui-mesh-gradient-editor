@@ -549,7 +549,11 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
                         self.points = .points(newPoints)
                       }
                     ), 
-                    size: gradientSize
+                    size: gradientSize,
+                    onSelect: {
+                      print("selecting \(h) \(w)")
+                      focusingPoint = .init(x: h, y: w)
+                    }
                   )
 
                 }
@@ -650,9 +654,10 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
 
     private static func handlesForPoint(
       point: Binding<BookMeshGradientBezierPoints.ContentView.ControlPoint>,
-      size: CGSize
+      size: CGSize,
+      onSelect: @escaping @MainActor () -> Void
     ) -> some View {
-      PointHandle(color: point.wrappedValue.color, onTap: {})
+      PointHandle(color: point.wrappedValue.color, onTap: onSelect)
         .position(
           x: CGFloat(point.wrappedValue.position.x) * size.width,
           y: CGFloat(point.wrappedValue.position.y) * size.height
