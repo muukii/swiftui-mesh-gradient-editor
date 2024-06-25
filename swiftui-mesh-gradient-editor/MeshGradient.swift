@@ -6,13 +6,13 @@ struct BookMeshGradient: View, PreviewProvider {
   var body: some View {
     ContentView()
   }
-
+  
   static var previews: some View {
     Self()
   }
-
+  
   private struct ContentView: View {
-
+    
     struct ControlPoint: Equatable {
       
       struct Representation: Codable {
@@ -37,14 +37,14 @@ struct BookMeshGradient: View, PreviewProvider {
           )
         }
       }
-
+      
       var position: SIMD2<Float>
       var color: Color
-
+      
     }
-
+    
     @State var gradientSize: CGSize = .zero
-
+    
     @State var focusingPoint: (x: Int, y: Int)?
     
     @State var pickingColor: Color?
@@ -67,24 +67,24 @@ struct BookMeshGradient: View, PreviewProvider {
         .init(position: .init(1, 1), color: .purple),
       ],
     ]
-
+    
     private var flattenedPoints: [ControlPoint] {
       matrix.flatMap { $0 }
     }
-
+    
     private var width: Int {
       matrix.first?.count ?? 0
     }
-
+    
     private var height: Int {
       matrix.count
     }
-
+    
     var body: some View {
       NavigationView {
         VStack {
           ZStack {
-            
+                        
             MeshGradient(
               width: width,
               height: height,
@@ -116,7 +116,7 @@ struct BookMeshGradient: View, PreviewProvider {
                   color: point.color,
                   onTap: {
                     focusingPoint = (h, w)
-
+                    
                   }
                 )
                 .position(
@@ -157,7 +157,7 @@ struct BookMeshGradient: View, PreviewProvider {
             rowStepper
             
             columnStepper
-           
+            
             if let focusingPoint {
               ColorPicker(
                 selection: $matrix[focusingPoint.x][focusingPoint.y].color,
@@ -181,7 +181,7 @@ struct BookMeshGradient: View, PreviewProvider {
           .background(RoundedRectangle(cornerRadius: 16).fill(.background.secondary))
           .padding(.horizontal)
           .onChange(of: matrix) { oldValue, newValue in
-                                  
+            
           }
           
         }
@@ -196,7 +196,7 @@ struct BookMeshGradient: View, PreviewProvider {
             
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-
+            
             let data = try! encoder.encode(rep)
             let string = String(data: data, encoding: .utf8)!
             print(string)
@@ -210,7 +210,7 @@ struct BookMeshGradient: View, PreviewProvider {
       Stepper(
         "W",
         onIncrement: {
-                    
+          
           // update position
           do {
             let coefficient = (1 - (1 / Float(width)))
@@ -277,7 +277,7 @@ struct BookMeshGradient: View, PreviewProvider {
       Stepper(
         "H",
         onIncrement: {
-                    
+          
           // update position
           do {
             let coefficient = (1 - (1 / Float(height)))
@@ -350,12 +350,12 @@ struct BookMeshGradient: View, PreviewProvider {
       
     }
   }
-
+  
   private struct Handle: View {
-
+    
     private let onTap: @MainActor () -> Void
     private let color: Color
-
+    
     init(
       color: Color,
       onTap: @escaping @MainActor () -> Void
@@ -363,12 +363,12 @@ struct BookMeshGradient: View, PreviewProvider {
       self.color = color
       self.onTap = onTap
     }
-
+    
     var body: some View {
       Button {
         onTap()
       } label: {
-
+        
         Circle()
           .fill(color)
           .frame(width: 20, height: 20)
@@ -377,14 +377,9 @@ struct BookMeshGradient: View, PreviewProvider {
               .stroke(.background, lineWidth: 8)
           )
           .padding(4)
-
+        
       }
-
+      
     }
   }
-}
-
-#Preview {
-  @Previewable @State var value = ""
-  TextField("", text: $value)
 }
