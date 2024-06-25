@@ -12,14 +12,21 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
 
   private struct ContentView: View {
 
-    struct ControlPoint: Equatable {
+    struct BezierControlPoint: Equatable {
 
       var point: MeshGradient.BezierPoint
       var color: Color
 
     }
-    
-    struct Coordinate: Equatable {        
+
+    struct ControlPoint: Equatable {
+
+      var position: SIMD2<Float>
+      var color: Color
+
+    }
+
+    struct Coordinate: Equatable {
       var x: Int
       var y: Int
     }
@@ -31,7 +38,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
     @State var pickingColor: Color?
 
     /// 2D row and column
-    @State private var matrix: [[ControlPoint]] = [
+    @State private var bezierMatrix: [[BezierControlPoint]] = [
       [
         .init(
           point: .init(
@@ -78,16 +85,16 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
       ],
     ]
 
-    private var flattenedPoints: [ControlPoint] {
-      matrix.flatMap { $0 }
+    private var flattenedPoints: [BezierControlPoint] {
+      bezierMatrix.flatMap { $0 }
     }
 
     private var width: Int {
-      matrix.first?.count ?? 0
+      bezierMatrix.first?.count ?? 0
     }
 
     private var height: Int {
-      matrix.count
+      bezierMatrix.count
     }
 
     var body: some View {
@@ -120,8 +127,8 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
             ForEach(0..<height, id: \.self) { h in
               ForEach(0..<width, id: \.self) { w in
 
-                let point = $matrix[h][w]
-                
+                let point = $bezierMatrix[h][w]
+
                 let p = Coordinate(x: h, y: w)
 
                 Self.handles(
@@ -131,7 +138,8 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
                   onSelect: {
                     print("selecting \(p)")
                     focusingPoint = p
-                })
+                  }
+                )
 
               }
             }
@@ -148,7 +156,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
 
             if let focusingPoint {
               ColorPicker(
-                selection: $matrix[focusingPoint.x][focusingPoint.y].color,
+                selection: $bezierMatrix[focusingPoint.x][focusingPoint.y].color,
                 supportsOpacity: true,
                 label: {
                   EmptyView()
@@ -168,7 +176,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           .padding()
           .background(RoundedRectangle(cornerRadius: 16).fill(.background.secondary))
           .padding(.horizontal)
-          .onChange(of: matrix) { oldValue, newValue in
+          .onChange(of: bezierMatrix) { oldValue, newValue in
 
           }
 
@@ -177,7 +185,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
     }
 
     private static func handles(
-      point: Binding<BookMeshGradientBezierPoints.ContentView.ControlPoint>,
+      point: Binding<BookMeshGradientBezierPoints.ContentView.BezierControlPoint>,
       size: CGSize,
       isActive: Bool,
       onSelect: @escaping @MainActor () -> Void
@@ -231,25 +239,26 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
               view: BezierHandle().tint(.blue),
               binding: point.point.leadingControlPoint
             )
-            
+
             makeDraggalbe(
               view: BezierHandle(),
               binding: point.point.topControlPoint
             )
-            
+
             makeDraggalbe(
               view: BezierHandle(),
               binding: point.point.bottomControlPoint
             )
-            
+
             makeDraggalbe(
               view: BezierHandle().tint(.blue),
               binding: point.point.trailingControlPoint
             )
           }
-          .transition(.scale.animation(.spring))
+          .zIndex(1)
+//          .transition(.scale.animation(.spring))
         }
-        
+
       }
     }
 
@@ -262,9 +271,9 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let coefficient = (1 - (1 / Float(width)))
 
-            for column in matrix.indices {
-              for row in matrix[column].indices {
-                matrix[column][row].point.position.x *= coefficient
+            for column in bezierMatrix.indices {
+              for row in bezierMatrix[column].indices {
+                bezierMatrix[column][row].point.position.x *= coefficient
               }
             }
           }
@@ -273,16 +282,23 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let step = 1.0 / Float(height - 1)
 
-            for column in matrix.indices {
+            for column in bezierMatrix.indices {
 
-              let newColor = matrix[column].last!.color
+              let newColor = bezierMatrix[column].last!.color
 
-              //              matrix[column].append(
-              //                .init(
-              //                  position: .init(1, Float(column) * step),
-              //                  color: newColor
-              //                )
-              //              )
+              let position = SIMD2<Float>.init(1, Float(column) * step)
+              bezierMatrix[column].append(
+                .init(
+                  point: .init(
+                    position: position,
+                    leadingControlPoint: position,
+                    topControlPoint: position,
+                    trailingControlPoint: position,
+                    bottomControlPoint: position
+                  ),
+                  color: newColor
+                )
+              )
             }
           }
         },
@@ -296,8 +312,8 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
 
           // apply
           do {
-            for i in matrix.indices {
-              matrix[i].removeLast()
+            for i in bezierMatrix.indices {
+              bezierMatrix[i].removeLast()
             }
           }
 
@@ -305,15 +321,15 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let coefficient = (1 + (1 / Float(width - 1)))
 
-            //            for column in matrix.indices {
-            //              for row in matrix[column].indices {
-            //                matrix[column][row].position.x *= coefficient
-            //              }
-            //            }
+            for column in bezierMatrix.indices {
+              for row in bezierMatrix[column].indices {
+                bezierMatrix[column][row].point.position.x *= coefficient
+              }
+            }
 
-            //            for column in matrix.indices {
-            //              matrix[column][width - 1].position.x = 1
-            //            }
+            for column in bezierMatrix.indices {
+              bezierMatrix[column][width - 1].point.position.x = 1
+            }
           }
 
         }
@@ -329,11 +345,11 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let coefficient = (1 - (1 / Float(height)))
 
-            //            for column in matrix.indices {
-            //              for row in matrix[column].indices {
-            //                matrix[column][row].position.y *= coefficient
-            //              }
-            //            }
+            for column in bezierMatrix.indices {
+              for row in bezierMatrix[column].indices {
+                bezierMatrix[column][row].point.position.y *= coefficient
+              }
+            }
 
           }
 
@@ -341,21 +357,30 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let step = 1.0 / Float(width - 1)
 
-            var row: [ControlPoint] = []
+            var row: [BezierControlPoint] = []
 
             for i in 0..<width {
 
-              let newColor = matrix.last![i].color
+              let newColor = bezierMatrix.last![i].color
 
-              //              row.append(
-              //                .init(
-              //                  position: .init(Float(i) * step, 1),
-              //                  color: newColor
-              //                )
-              //              )
+              let position = SIMD2<Float>.init(Float(i) * step, 1)
+
+              row.append(
+                .init(
+                  point: .init(
+                    position: position,
+                    leadingControlPoint: position,
+                    topControlPoint: position,
+                    trailingControlPoint: position,
+                    bottomControlPoint: position
+                  ),
+                  color: newColor
+                )
+              )
+
             }
 
-            matrix.append(
+            bezierMatrix.append(
               row
             )
           }
@@ -372,7 +397,7 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           // Apply
           do {
 
-            matrix.removeLast()
+            bezierMatrix.removeLast()
 
           }
 
@@ -381,15 +406,15 @@ struct BookMeshGradientBezierPoints: View, PreviewProvider {
           do {
             let coefficient = (1 + (1 / Float(height - 1)))
 
-            //            for column in matrix.indices {
-            //              for row in matrix[column].indices {
-            //                matrix[column][row].position.y *= coefficient
-            //              }
-            //            }
+            for column in bezierMatrix.indices {
+              for row in bezierMatrix[column].indices {
+                bezierMatrix[column][row].point.position.y *= coefficient
+              }
+            }
 
-            //            for row in matrix[height - 1].indices {
-            //              matrix[height - 1][row].position.y = 1
-            //            }
+            for row in bezierMatrix[height - 1].indices {
+              bezierMatrix[height - 1][row].point.position.y = 1
+            }
           }
 
         }
